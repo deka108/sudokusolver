@@ -1,5 +1,5 @@
 const LENGTH = 9;
-const ROW = "ABCDEFGHI";
+const ROW = "abcdefghi";
 const COL = "123456789";
 
 const BOX_INDEX = {};
@@ -162,11 +162,12 @@ function SudokuSolver(board) {
     this.neighbours = neighbours;
    
     this.solve = () => {
-        const consistent = this.arc3();
+        const consistent = this.ac3();
 
         if (consistent){
             if (this.unsolvedVars.size === 0){
                 console.log("sudoku is already solved!")
+                return true;
             } else {
                 let result = {};
                 this.bts(result);
@@ -174,18 +175,21 @@ function SudokuSolver(board) {
                     Object.keys(result).forEach((key) => {
                         this.board[key] = result[key];
                     })
+                    return true;
                 } else {
-                    console.log("unable to solve the puzzle!")
+                    console.log("unable to solve the puzzle!");
+                    return false;
                 }
             }
         } else {
             console.log("sudoku config is invalid!");
+            return false;
         }
     }
 
     this.isBoardSolved = (assignment) => Object.keys(assignment).length === this.unsolvedVars.size;
 
-    this.arc3 = () => {
+    this.ac3 = () => {
         let queue = Array.from(this.arcs);
         while (queue.length != 0){
             const [X1, X2] = queue.shift();
@@ -223,7 +227,6 @@ function SudokuSolver(board) {
 
     this.bts = (assignment) => {
         // assignment is complete
-        // console.log( Object.keys(assignment).length, this.unsolvedVars.size, this.solvedVars.size);
         if (this.isBoardSolved(assignment)){
             return assignment;
         } else {
@@ -282,7 +285,7 @@ function SudokuSolver(board) {
         // map val to count
         let valCount = [];
 
-        this.domainVars[variable].forEach((val) => {
+        for (const val of this.domainVars[variable]){
             let count = 0;
             let consistent = true;
 
@@ -295,7 +298,7 @@ function SudokuSolver(board) {
 
                 // FC: if the value causes any of the neighbour's domain variables to be 0
                 // it's an illegal move
-                if (curCount == 0){
+                if (curCount === 0){
                     consistent = false;
                     break;
                 }
@@ -304,7 +307,7 @@ function SudokuSolver(board) {
             if (consistent){
                 valCount.push([val, count]);
             }
-        });
+        };
 
         valCount.sort((first, second) => {
             return -(first[1] - second[1]);
@@ -328,7 +331,7 @@ function SudokuSolver(board) {
         for (const n of this.neighbours[variable]) {
             if (this.domainVars[n].has(val)){
                 this.domainVars[n].delete(val);
-                removedVars.add(variable);
+                removedVars.add(n);
             }
             
             // a move is illegal if it's causing the neighbouring's var to be 0
@@ -366,14 +369,21 @@ function SudokuSolver(board) {
     this.checkAssignmentConsistency = (assignment, variable, val) => {
         // go over the assignment of the variable's neighbours
         for (const n of this.neighbours[variable]){
-            if (assignment.hasOwnProperty(n)){
-                // check if a previous assignment is assigned to the same value
-                if (assignment[n] === val){
-                    return false;
-                }
+            // check if a previous assignment is assigned to the same value
+            if (assignment.hasOwnProperty(n) && assignment[n] == val ){
+                return false;
             }
         }
 
         return true;
     }
+}
+
+const testSudoku = () => {
+    let board = parseBoard("800000000003600000070090200050007000000045700000100030001000068008500010090000400")
+    // let board = parseBoard("094000130000000000000076002080010000032000000000200060000050400000008007006304008");
+    printBoard(board);
+    let solver = new SudokuSolver(board);
+    solver.solve();
+    printBoard(solver.board);
 }

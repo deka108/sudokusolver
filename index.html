@@ -1,150 +1,173 @@
 <html>
     <head>
+        <meta name="referrer" content="strict-origin" />
         <title>Sudoku Solver</title>
         
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-        <link href="https//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.3.0/milligram.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
-
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Raleway:400,300,600">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css">
+        <link rel="stylesheet" type="text/css"  href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
         <link type="text/css" rel="stylesheet" href="style.css" />
+        <script src="https://kit.fontawesome.com/404fdc203a.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <div class="container">
+        <div class="container content">
             <div class="row">
-                <h1>Sudoku</h1>
+                <h1>Sudoku Solver</h1>
             </div>
             <div class="row">
-                <div class="column" id="board">
+                <div class="one-half column" id="board-container">
                     <table id="grid">
-                        <colgroup class="sudoku"><col><col><col></colgroup>
-                        <colgroup class="sudoku"><col><col><col></colgroup>
-                        <colgroup class="sudoku"><col><col><col></colgroup>
-                        <tbody class="sudoku">
+                        <colgroup class="board"><col><col><col></colgroup>
+                        <colgroup class="board"><col><col><col></colgroup>
+                        <colgroup class="board"><col><col><col></colgroup>
+                        <tbody class="board">
                             <tr>
-                                <td id="td-a0"><input id="text-a0" type="text" maxlength="1"></td>
-                                <td id="td-a1"><input id="text-a1" type="text" maxlength="1"></td>
-                                <td id="td-a2"><input id="text-a2" type="text" maxlength="1"></td>
-                                <td id="td-a3"><input id="text-a3" type="text" maxlength="1"></td>
-                                <td id="td-a4"><input id="text-a4" type="text" maxlength="1"></td>
-                                <td id="td-a5"><input id="text-a5" type="text" maxlength="1"></td>
-                                <td id="td-a6"><input id="text-a6" type="text" maxlength="1"></td>
-                                <td id="td-a7"><input id="text-a7" type="text" maxlength="1"></td>
-                                <td id="td-a8"><input id="text-a8" type="text" maxlength="1"></td>
+                                <td id="td-a1"><input class="cell" id="text-a1" type="text" maxlength="1"></td>
+                                <td id="td-a2"><input class="cell" id="text-a2" type="text" maxlength="1"></td>
+                                <td id="td-a3"><input class="cell" id="text-a3" type="text" maxlength="1"></td>
+                                <td id="td-a4"><input class="cell" id="text-a4" type="text" maxlength="1"></td>
+                                <td id="td-a5"><input class="cell" id="text-a5" type="text" maxlength="1"></td>
+                                <td id="td-a6"><input class="cell" id="text-a6" type="text" maxlength="1"></td>
+                                <td id="td-a7"><input class="cell" id="text-a7" type="text" maxlength="1"></td>
+                                <td id="td-a8"><input class="cell" id="text-a8" type="text" maxlength="1"></td>
+                                <td id="td-a9"><input class="cell" id="text-a9" type="text" maxlength="1"></td>
                             </tr>
                             
                             <tr>
-                                <td id="td-b0"><input id="text-b0" type="text" maxlength="1"></td>
-                                <td id="td-b1"><input id="text-b1" type="text" maxlength="1"></td>
-                                <td id="td-b2"><input id="text-b2" type="text" maxlength="1"></td>
-                                <td id="td-b3"><input id="text-b3" type="text" maxlength="1"></td>
-                                <td id="td-b4"><input id="text-b4" type="text" maxlength="1"></td>
-                                <td id="td-b5"><input id="text-b5" type="text" maxlength="1"></td>
-                                <td id="td-b6"><input id="text-b6" type="text" maxlength="1"></td>
-                                <td id="td-b7"><input id="text-b7" type="text" maxlength="1"></td>
-                                <td id="td-b8"><input id="text-b8" type="text" maxlength="1"></td>
+                                <td id="td-b1"><input class="cell" id="text-b1" type="text" maxlength="1"></td>
+                                <td id="td-b2"><input class="cell" id="text-b2" type="text" maxlength="1"></td>
+                                <td id="td-b3"><input class="cell" id="text-b3" type="text" maxlength="1"></td>
+                                <td id="td-b4"><input class="cell" id="text-b4" type="text" maxlength="1"></td>
+                                <td id="td-b5"><input class="cell" id="text-b5" type="text" maxlength="1"></td>
+                                <td id="td-b6"><input class="cell" id="text-b6" type="text" maxlength="1"></td>
+                                <td id="td-b7"><input class="cell" id="text-b7" type="text" maxlength="1"></td>
+                                <td id="td-b8"><input class="cell" id="text-b8" type="text" maxlength="1"></td>
+                                <td id="td-b9"><input class="cell" id="text-b9" type="text" maxlength="1"></td>
                             </tr>
                             
                             <tr>
-                                <td id="td-c0"><input id="text-c0" type="text" maxlength="1"></td>
-                                <td id="td-c1"><input id="text-c1" type="text" maxlength="1"></td>
-                                <td id="td-c2"><input id="text-c2" type="text" maxlength="1"></td>
-                                <td id="td-c3"><input id="text-c3" type="text" maxlength="1"></td>
-                                <td id="td-c4"><input id="text-c4" type="text" maxlength="1"></td>
-                                <td id="td-c5"><input id="text-c5" type="text" maxlength="1"></td>
-                                <td id="td-c6"><input id="text-c6" type="text" maxlength="1"></td>
-                                <td id="td-c7"><input id="text-c7" type="text" maxlength="1"></td>
-                                <td id="td-c8"><input id="text-c8" type="text" maxlength="1"></td>
+                                <td id="td-c1"><input class="cell" id="text-c1" type="text" maxlength="1"></td>
+                                <td id="td-c2"><input class="cell" id="text-c2" type="text" maxlength="1"></td>
+                                <td id="td-c3"><input class="cell" id="text-c3" type="text" maxlength="1"></td>
+                                <td id="td-c4"><input class="cell" id="text-c4" type="text" maxlength="1"></td>
+                                <td id="td-c5"><input class="cell" id="text-c5" type="text" maxlength="1"></td>
+                                <td id="td-c6"><input class="cell" id="text-c6" type="text" maxlength="1"></td>
+                                <td id="td-c7"><input class="cell" id="text-c7" type="text" maxlength="1"></td>
+                                <td id="td-c8"><input class="cell" id="text-c8" type="text" maxlength="1"></td>
+                                <td id="td-c9"><input class="cell" id="text-c9" type="text" maxlength="1"></td>
                             </tr>
-                        </tbody class="sudoku">
+                        </tbody class="board">
                         
-                        <tbody class="sudoku">
+                        <tbody class="board">
                             <tr>
-                                <td id="td-d0"><input id="text-d0" type="text" maxlength="1"></td>
-                                <td id="td-d1"><input id="text-d1" type="text" maxlength="1"></td>
-                                <td id="td-d2"><input id="text-d2" type="text" maxlength="1"></td>
-                                <td id="td-d3"><input id="text-d3" type="text" maxlength="1"></td>
-                                <td id="td-d4"><input id="text-d4" type="text" maxlength="1"></td>
-                                <td id="td-d5"><input id="text-d5" type="text" maxlength="1"></td>
-                                <td id="td-d6"><input id="text-d6" type="text" maxlength="1"></td>
-                                <td id="td-d7"><input id="text-d7" type="text" maxlength="1"></td>
-                                <td id="td-d8"><input id="text-d8" type="text" maxlength="1"></td>
+                                <td id="td-d1"><input class="cell" id="text-d1" type="text" maxlength="1"></td>
+                                <td id="td-d2"><input class="cell" id="text-d2" type="text" maxlength="1"></td>
+                                <td id="td-d3"><input class="cell" id="text-d3" type="text" maxlength="1"></td>
+                                <td id="td-d4"><input class="cell" id="text-d4" type="text" maxlength="1"></td>
+                                <td id="td-d5"><input class="cell" id="text-d5" type="text" maxlength="1"></td>
+                                <td id="td-d6"><input class="cell" id="text-d6" type="text" maxlength="1"></td>
+                                <td id="td-d7"><input class="cell" id="text-d7" type="text" maxlength="1"></td>
+                                <td id="td-d8"><input class="cell" id="text-d8" type="text" maxlength="1"></td>
+                                <td id="td-d9"><input class="cell" id="text-d9" type="text" maxlength="1"></td>
                             </tr>
                             
                             <tr>
-                                <td id="td-e0"><input id="text-e0" type="text" maxlength="1"></td>
-                                <td id="td-e1"><input id="text-e1" type="text" maxlength="1"></td>
-                                <td id="td-e2"><input id="text-e2" type="text" maxlength="1"></td>
-                                <td id="td-e3"><input id="text-e3" type="text" maxlength="1"></td>
-                                <td id="td-e4"><input id="text-e4" type="text" maxlength="1"></td>
-                                <td id="td-e5"><input id="text-e5" type="text" maxlength="1"></td>
-                                <td id="td-e6"><input id="text-e6" type="text" maxlength="1"></td>
-                                <td id="td-e7"><input id="text-e7" type="text" maxlength="1"></td>
-                                <td id="td-e8"><input id="text-e8" type="text" maxlength="1"></td>
+                                <td id="td-e1"><input class="cell" id="text-e1" type="text" maxlength="1"></td>
+                                <td id="td-e2"><input class="cell" id="text-e2" type="text" maxlength="1"></td>
+                                <td id="td-e3"><input class="cell" id="text-e3" type="text" maxlength="1"></td>
+                                <td id="td-e4"><input class="cell" id="text-e4" type="text" maxlength="1"></td>
+                                <td id="td-e5"><input class="cell" id="text-e5" type="text" maxlength="1"></td>
+                                <td id="td-e6"><input class="cell" id="text-e6" type="text" maxlength="1"></td>
+                                <td id="td-e7"><input class="cell" id="text-e7" type="text" maxlength="1"></td>
+                                <td id="td-e8"><input class="cell" id="text-e8" type="text" maxlength="1"></td>
+                                <td id="td-e9"><input class="cell" id="text-e9" type="text" maxlength="1"></td>
                             </tr>
                             
                             <tr>
-                                <td id="td-f0"><input id="text-f0" type="text" maxlength="1"></td>
-                                <td id="td-f1"><input id="text-f1" type="text" maxlength="1"></td>
-                                <td id="td-f2"><input id="text-f2" type="text" maxlength="1"></td>
-                                <td id="td-f3"><input id="text-f3" type="text" maxlength="1"></td>
-                                <td id="td-f4"><input id="text-f4" type="text" maxlength="1"></td>
-                                <td id="td-f5"><input id="text-f5" type="text" maxlength="1"></td>
-                                <td id="td-f6"><input id="text-f6" type="text" maxlength="1"></td>
-                                <td id="td-f7"><input id="text-f7" type="text" maxlength="1"></td>
-                                <td id="td-f8"><input id="text-f8" type="text" maxlength="1"></td>
+                                <td id="td-f1"><input class="cell" id="text-f1" type="text" maxlength="1"></td>
+                                <td id="td-f2"><input class="cell" id="text-f2" type="text" maxlength="1"></td>
+                                <td id="td-f3"><input class="cell" id="text-f3" type="text" maxlength="1"></td>
+                                <td id="td-f4"><input class="cell" id="text-f4" type="text" maxlength="1"></td>
+                                <td id="td-f5"><input class="cell" id="text-f5" type="text" maxlength="1"></td>
+                                <td id="td-f6"><input class="cell" id="text-f6" type="text" maxlength="1"></td>
+                                <td id="td-f7"><input class="cell" id="text-f7" type="text" maxlength="1"></td>
+                                <td id="td-f8"><input class="cell" id="text-f8" type="text" maxlength="1"></td>
+                                <td id="td-f9"><input class="cell" id="text-f9" type="text" maxlength="1"></td>
                             </tr>
-                        </tbody class="sudoku">
+                        </tbody class="board">
                         
-                        <tbody class="sudoku">
+                        <tbody class="board">
                             <tr>
-                                <td id="td-g0"><input id="text-g0" type="text" maxlength="1"></td>
-                                <td id="td-g1"><input id="text-g1" type="text" maxlength="1"></td>
-                                <td id="td-g2"><input id="text-g2" type="text" maxlength="1"></td>
-                                <td id="td-g3"><input id="text-g3" type="text" maxlength="1"></td>
-                                <td id="td-g4"><input id="text-g4" type="text" maxlength="1"></td>
-                                <td id="td-g5"><input id="text-g5" type="text" maxlength="1"></td>
-                                <td id="td-g6"><input id="text-g6" type="text" maxlength="1"></td>
-                                <td id="td-g7"><input id="text-g7" type="text" maxlength="1"></td>
-                                <td id="td-g8"><input id="text-g8" type="text" maxlength="1"></td>
+                                <td id="td-g1"><input class="cell" id="text-g1" type="text" maxlength="1"></td>
+                                <td id="td-g2"><input class="cell" id="text-g2" type="text" maxlength="1"></td>
+                                <td id="td-g3"><input class="cell" id="text-g3" type="text" maxlength="1"></td>
+                                <td id="td-g4"><input class="cell" id="text-g4" type="text" maxlength="1"></td>
+                                <td id="td-g5"><input class="cell" id="text-g5" type="text" maxlength="1"></td>
+                                <td id="td-g6"><input class="cell" id="text-g6" type="text" maxlength="1"></td>
+                                <td id="td-g7"><input class="cell" id="text-g7" type="text" maxlength="1"></td>
+                                <td id="td-g8"><input class="cell" id="text-g8" type="text" maxlength="1"></td>
+                                <td id="td-g9"><input class="cell" id="text-g9" type="text" maxlength="1"></td>
                             </tr>
                             
                             <tr>
-                                <td id="td-h0"><input id="text-h0" type="text" maxlength="1"></td>
-                                <td id="td-h1"><input id="text-h1" type="text" maxlength="1"></td>
-                                <td id="td-h2"><input id="text-h2" type="text" maxlength="1"></td>
-                                <td id="td-h3"><input id="text-h3" type="text" maxlength="1"></td>
-                                <td id="td-h4"><input id="text-h4" type="text" maxlength="1"></td>
-                                <td id="td-h5"><input id="text-h5" type="text" maxlength="1"></td>
-                                <td id="td-h6"><input id="text-h6" type="text" maxlength="1"></td>
-                                <td id="td-h7"><input id="text-h7" type="text" maxlength="1"></td>
-                                <td id="td-h8"><input id="text-h8" type="text" maxlength="1"></td>
+                                <td id="td-h1"><input class="cell" id="text-h1" type="text" maxlength="1"></td>
+                                <td id="td-h2"><input class="cell" id="text-h2" type="text" maxlength="1"></td>
+                                <td id="td-h3"><input class="cell" id="text-h3" type="text" maxlength="1"></td>
+                                <td id="td-h4"><input class="cell" id="text-h4" type="text" maxlength="1"></td>
+                                <td id="td-h5"><input class="cell" id="text-h5" type="text" maxlength="1"></td>
+                                <td id="td-h6"><input class="cell" id="text-h6" type="text" maxlength="1"></td>
+                                <td id="td-h7"><input class="cell" id="text-h7" type="text" maxlength="1"></td>
+                                <td id="td-h8"><input class="cell" id="text-h8" type="text" maxlength="1"></td>
+                                <td id="td-h9"><input class="cell" id="text-h9" type="text" maxlength="1"></td>
                             </tr>
                             
                             <tr>
-                                <td id="td-i0"><input id="text-i0" type="text" maxlength="1"></td>
-                                <td id="td-i1"><input id="text-i1" type="text" maxlength="1"></td>
-                                <td id="td-i2"><input id="text-i2" type="text" maxlength="1"></td>
-                                <td id="td-i3"><input id="text-i3" type="text" maxlength="1"></td>
-                                <td id="td-i4"><input id="text-i4" type="text" maxlength="1"></td>
-                                <td id="td-i5"><input id="text-i5" type="text" maxlength="1"></td>
-                                <td id="td-i6"><input id="text-i6" type="text" maxlength="1"></td>
-                                <td id="td-i7"><input id="text-i7" type="text" maxlength="1"></td>
-                                <td id="td-i8"><input id="text-i8" type="text" maxlength="1"></td>
+                                <td id="td-i1"><input class="cell" id="text-i1" type="text" maxlength="1"></td>
+                                <td id="td-i2"><input class="cell" id="text-i2" type="text" maxlength="1"></td>
+                                <td id="td-i3"><input class="cell" id="text-i3" type="text" maxlength="1"></td>
+                                <td id="td-i4"><input class="cell" id="text-i4" type="text" maxlength="1"></td>
+                                <td id="td-i5"><input class="cell" id="text-i5" type="text" maxlength="1"></td>
+                                <td id="td-i6"><input class="cell" id="text-i6" type="text" maxlength="1"></td>
+                                <td id="td-i7"><input class="cell" id="text-i7" type="text" maxlength="1"></td>
+                                <td id="td-i8"><input class="cell" id="text-i8" type="text" maxlength="1"></td>
+                                <td id="td-i9"><input class="cell" id="text-i9" type="text" maxlength="1"></td>
                             </tr>
                             
-                        </tbody class="sudoku">
+                        </tbody class="board">
                     </table>
                 </div>
+                <div class="one-half column">
+                    <div class="row">
+                        <a class="button button-primary s-action" id="reset"><i class="fas fa-undo"></i> Reset Board</a>
+                    </div>
+                    <div class="row">
+                        <a class="button button-primary s-action" id="solve"><i class="fas fa-check-circle"></i> SolveIt!</a>
+                    </div>
+                    <div class="row">
+                        <a class="button button-primary s-action" id="checkSol"><i class="fas fa-search"></i>  Check Solution</a>
+                    </div>
+                    <div class="row">
+                        <a class="button button-primary s-action" id="copy"><i class="fas fa-copy"></i>  Copy to Clipboard</a>
+                    </div>
+                    <div class="row" id="check-config">
+
+                    </div>
+                </div>
             </div>
-            <div class="row">
-                <a class="button" href="#">Default Button</a>
+            <div>
+            <footer>
+                <div id="footer">
+                    <p>Made with <i class="fas fa-cookie"></i>  by <a href="http://github.com/deka108">deka108</a> &copy; 2020</p>
+                </div>
+            </footer>
             </div>
         </div>
         <script 
             src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
             integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
             crossorigin="anonymous"></script>
+        <script type="text/javascript" src="index.js"></script>
+        <script type="text/javascript" src="solver.js"></script>
+
     </body>
 </html>
