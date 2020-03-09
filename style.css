@@ -1,0 +1,32 @@
+input[id^="text"] {
+    width: 3em;
+    height: 3em;
+    text-align: center;
+    font-size: 1em;
+    margin: 0;
+    padding: 0;
+}
+colgroup, tbody { 
+    border: solid medium; 
+}
+
+table#grid { 
+    border-collapse: collapse; 
+    /* display: block; */
+    /* margin-left: 0 auto; */
+    width: fit-content;
+}
+
+td[id^="td"] { 
+    border: solid thin; 
+    height: 3em;
+    width: 3em;
+    text-align: center; 
+    padding: 0;
+    margin: 0;
+}
+
+#board{
+    /* max-width: 30em; */
+    text-align: center;
+}
