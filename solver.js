@@ -12,6 +12,12 @@ Array(9).fill().map((_, i) => {
     }    
 });
 
+let ALL_INDICES = []
+for (let r=0; r<ROW.length; r++){
+    for (let c=0; c<COL.length; c++){
+        ALL_INDICES.push(ROW[r] + COL[c]);
+    }
+}
 /**
  * Gets the domain values of a sudoku board.
  * 
@@ -160,222 +166,242 @@ function SudokuSolver(board) {
     const {arcs, neighbours} = getArcsNeighbours();
     this.arcs = arcs;
     this.neighbours = neighbours;
-   
-    this.solve = () => {
-        const consistent = this.ac3();
+}
+
+/**
+ * 
+ */
+SudokuSolver.prototype.isBoardSolved = function(assignment){
+    return Object.keys(assignment).length === this.unsolvedVars.size
+} ;
+
+/**
+ * 
+ */
+SudokuSolver.prototype.ac3 = function(){
+    let modifiedVars = {};
+    let queue = Array.from(this.arcs);
+    while (queue.length != 0){
+        const [X1, X2] = queue.shift();
+
+        if (this.revise(X1, X2, modifiedVars)){
+            // arc inconsistency found
+           if (this.domainVars[X1].size === 0){
+                return false;
+            }
+
+            this.neighbours[X1].forEach((n) => {
+                if (n != X2){
+                    queue.push([n, X1]);
+                }
+            });
+        }
+    }
+
+    return true;
+}
+
+SudokuSolver.prototype.revise = function (X1, X2, modified){
+    let revise = false;
+    let domainVarsX1 = new Set(this.domainVars[X1]);
+    domainVarsX1.forEach((x) => {
+        // no value y in Dj allows (x, y) to satisfy the constraints between Xi and Xj
+        // violation in sudoku case: choosing x will cause len(Dj) == 0
+        if (this.domainVars[X2].size === 1 && this.domainVars[X2].has(x)){
+            this.domainVars[X1].delete(x);
+
+            if (modified.hasOwnProperty(X1)){
+                modified[X1].push(x);
+            } else{
+                modified[X1] = [x];
+            }
+
+            revise = true;
+        }
+    })
+    return revise;
+}
+
+/**
+ * Minimum Remaining Value Heuristics: choose unassigned var having the least domain values
+ */
+SudokuSolver.prototype.selectUnassigned = function (assignment){
+    let minDomainLength = Number.MAX_VALUE;
+    let minVar = null;
+    this.unsolvedVars.forEach((x) => {
+        // unsolved var is not yet assigned
+        if (!assignment.hasOwnProperty(x)){
+            if (this.domainVars[x].size < minDomainLength) {
+                minDomainLength = this.domainVars[x].size;
+                minVar = x;
+            }
+        }
+    });
+
+    return minVar;
+}
+
+/**
+ * Least Constraining Value heuristics
+ * 
+ * order the values s.t. the value of the assigned var start from least constraining
+ *  effects on neighbouring cells
+ */
+SudokuSolver.prototype.orderDomainValues = function (variable) {
+    // map val to count
+    let valCount = [];
+
+    for (const val of this.domainVars[variable]){
+        let count = 0;
+        let consistent = true;
+
+        for (const n of this.neighbours[variable]) {
+            let curCount = this.domainVars[n].size;
+            if (this.domainVars[n].has(val)) {
+                curCount -= 1;
+            }
+            count += curCount;
+
+            // FC: if the value causes any of the neighbour's domain variables to be 0
+            // it's an illegal move
+            if (curCount === 0){
+                consistent = false;
+                break;
+            }
+        }
 
         if (consistent){
-            if (this.unsolvedVars.size === 0){
-                console.log("sudoku is already solved!")
-                return true;
-            } else {
-                let result = {};
-                this.bts(result);
-                if (this.isBoardSolved(result)){
-                    Object.keys(result).forEach((key) => {
-                        this.board[key] = result[key];
-                    })
-                    return true;
-                } else {
-                    console.log("unable to solve the puzzle!");
-                    return false;
-                }
-            }
-        } else {
-            console.log("sudoku config is invalid!");
+            valCount.push([val, count]);
+        }
+    };
+
+    valCount.sort((first, second) => {
+        return -(first[1] - second[1]);
+    });
+
+    return valCount;
+}
+
+
+/**
+ * Forward checking + propagate new assignment to its neighbours
+ * 
+ * @param {*} variable 
+ * @param {*} val 
+ */
+SudokuSolver.prototype.reduceDomainValues = function (variable, val) {
+    let legal = true;
+    let removedVars = new Set();
+    
+    // propagate new assignment, neighbours can't have the same value with the assigned var's value
+    for (const n of this.neighbours[variable]) {
+        if (this.domainVars[n].has(val)){
+            this.domainVars[n].delete(val);
+            removedVars.add(n);
+        }
+        
+        // a move is illegal if it's causing the neighbouring's var to be 0
+        if (this.domainVars[n].size === 0){
+            legal = false;
+            break;
+        }
+    };
+
+    return {
+        legal, 
+        removedVars
+    };
+}
+
+/**
+ * When backtracking, undo values that were modified during FC
+ * 
+ * @param {*} val 
+ * @param {*} removedVars 
+ */
+SudokuSolver.prototype.recoverDomainValues = function (val, removedVars){
+    for (const r of removedVars){
+        this.domainVars[r].add(val);
+    }
+}
+
+/**
+ * Check if the new assignment is consistent with the previous assignments
+ * 
+ * @param {*} assignment 
+ * @param {*} variable 
+ * @param {*} val 
+ */
+SudokuSolver.prototype.checkAssignmentConsistency = function (assignment, variable, val) {
+    // go over the assignment of the variable's neighbours
+    for (const n of this.neighbours[variable]){
+        // check if a previous assignment is assigned to the same value
+        if (assignment.hasOwnProperty(n) && assignment[n] == val ){
             return false;
         }
     }
 
-    this.isBoardSolved = (assignment) => Object.keys(assignment).length === this.unsolvedVars.size;
+    return true;
+}
 
-    this.ac3 = () => {
-        let queue = Array.from(this.arcs);
-        while (queue.length != 0){
-            const [X1, X2] = queue.shift();
 
-            if (this.revise(X1, X2)){
-                // arc inconsistency found
-               if (this.domainVars[X1].size === 0){
-                    return false;
-                }
+SudokuSolver.prototype.bts = function(assignment){
+    // assignment is complete
+    if (this.isBoardSolved(assignment)){
+        return assignment;
+    } else {
+        const variable = this.selectUnassigned(assignment);
+        const domainVals = this.orderDomainValues(variable);
 
-                this.neighbours[X1].forEach((n) => {
-                    if (n != X2){
-                        queue.push([n, X1]);
+        for (const item of domainVals){
+            const [val, _ ] = item;
+
+            // only assign if it's consistent
+            if (this.checkAssignmentConsistency(assignment, variable, val)){
+                assignment[variable] = val;
+                const {legal, removedVars} = this.reduceDomainValues(variable, val);
+                
+                // recover from bad move fast due to fc, only search for legal moves only
+                if (legal){
+                    let result = this.bts(assignment);
+                    if (result != null){
+                        return result;
                     }
-                });
+                }
+                
+                this.recoverDomainValues(val, removedVars);
+                delete assignment[variable];
             }
-        }
-
-        return true;
+        };
     }
+}
 
-    this.revise = (X1, X2) => {
-        let revise = false;
-        let domainVarsX1 = new Set(this.domainVars[X1]);
-        domainVarsX1.forEach((x) => {
-            // no value y in Dj allows (x, y) to satisfy the constraints between Xi and Xj
-            // violation in sudoku case: choosing x will cause len(Dj) == 0
-            if (this.domainVars[X2].size === 1 && this.domainVars[X2].has(x)){
-                this.domainVars[X1].delete(x);
-                revise = true;
-            }
-        })
-        return revise;
-    }
+/**
+ * 
+ */
+SudokuSolver.prototype.solve = function (){
+    const consistent = this.ac3();
 
-    this.bts = (assignment) => {
-        // assignment is complete
-        if (this.isBoardSolved(assignment)){
-            return assignment;
+    if (consistent){
+        if (this.unsolvedVars.size === 0){
+            console.log("sudoku is already solved!")
+            return true;
         } else {
-            const variable = this.selectUnassigned(assignment);
-            const domainVals = this.orderDomainValues(variable);
-    
-            for (const item of domainVals){
-                const [val, _ ] = item;
-
-                // only assign if it's consistent
-                if (this.checkAssignmentConsistency(assignment, variable, val)){
-                    assignment[variable] = val;
-                    const {legal, removedVars} = this.reduceDomainValues(variable, val);
-                    
-                    // recover from bad move fast due to fc, only search for legal moves only
-                    if (legal){
-                        let result = this.bts(assignment);
-                        if (result != null){
-                            return result;
-                        }
-                    }
-                    
-                    this.recoverDomainValues(val, removedVars);
-                    delete assignment[variable];
-                }
-            };
-        }
-    }
-
-    /**
-     * Minimum Remaining Value Heuristics: choose unassigned var having the least domain values
-     */
-    this.selectUnassigned = (assignment) => {
-        let minDomainLength = Number.MAX_VALUE;
-        let minVar = "";
-        this.unsolvedVars.forEach((x) => {
-            // unsolved var is not yet assigned
-            if (!assignment.hasOwnProperty(x)){
-                if (this.domainVars[x].size < minDomainLength) {
-                    minDomainLength = this.domainVars[x].size;
-                    minVar = x;
-                }
-            }
-        });
-
-        return minVar;
-    }
-
-    /**
-     * Least Constraining Value heuristics
-     * 
-     * order the values s.t. the value of the assigned var start from least constraining
-     *  effects on neighbouring cells
-     */
-    this.orderDomainValues = (variable) => {
-        // map val to count
-        let valCount = [];
-
-        for (const val of this.domainVars[variable]){
-            let count = 0;
-            let consistent = true;
-
-            for (const n of this.neighbours[variable]) {
-                let curCount = this.domainVars[n].size;
-                if (this.domainVars[n].has(val)) {
-                    curCount -= 1;
-                }
-                count += curCount;
-
-                // FC: if the value causes any of the neighbour's domain variables to be 0
-                // it's an illegal move
-                if (curCount === 0){
-                    consistent = false;
-                    break;
-                }
-            }
-
-            if (consistent){
-                valCount.push([val, count]);
-            }
-        };
-
-        valCount.sort((first, second) => {
-            return -(first[1] - second[1]);
-        });
-
-        return valCount;
-    }
-
-
-    /**
-     * Forward checking + propagate new assignment to its neighbours
-     * 
-     * @param {*} variable 
-     * @param {*} val 
-     */
-    this.reduceDomainValues = (variable, val) => {
-        let legal = true;
-        let removedVars = new Set();
-        
-        // propagate new assignment, neighbours can't have the same value with the assigned var's value
-        for (const n of this.neighbours[variable]) {
-            if (this.domainVars[n].has(val)){
-                this.domainVars[n].delete(val);
-                removedVars.add(n);
-            }
-            
-            // a move is illegal if it's causing the neighbouring's var to be 0
-            if (this.domainVars[n].size === 0){
-                legal = false;
-                break;
-            }
-        };
-
-        return {
-            legal, 
-            removedVars
-        };
-    }
-
-    /**
-     * When backtracking, undo values that were modified during FC
-     * 
-     * @param {*} val 
-     * @param {*} removedVars 
-     */
-    this.recoverDomainValues = (val, removedVars) => {
-        for (const r of removedVars){
-            this.domainVars[r].add(val);
-        }
-    }
-
-    /**
-     * Check if the new assignment is consistent with the previous assignments
-     * 
-     * @param {*} assignment 
-     * @param {*} variable 
-     * @param {*} val 
-     */
-    this.checkAssignmentConsistency = (assignment, variable, val) => {
-        // go over the assignment of the variable's neighbours
-        for (const n of this.neighbours[variable]){
-            // check if a previous assignment is assigned to the same value
-            if (assignment.hasOwnProperty(n) && assignment[n] == val ){
+            let result = {};
+            this.bts(result);
+            if (this.isBoardSolved(result)){
+                Object.keys(result).forEach((key) => {
+                    this.board[key] = result[key];
+                })
+                return true;
+            } else {
+                console.log("unable to solve the puzzle!");
                 return false;
             }
         }
-
-        return true;
+    } else {
+        console.log("sudoku config is invalid!");
+        return false;
     }
 }
 
@@ -387,3 +413,29 @@ const testSudoku = () => {
     solver.solve();
     printBoard(solver.board);
 }
+
+const createSudoku = (board) => {
+    // random filled numbers
+    let MAX = 30;
+    let MIN = 10;
+    let idx = Math.floor(Math.random(MIN) * (MAX));
+    let solver = new SudokuSolver(board);
+    let solved = new Set();
+
+    // random first cell
+    let cell = ALL_INDICES[Math.floor(Math.random() * ALL_INDICES.length)];
+    let vals = [...solver.domainVars[cell]];
+    // board[cell] = vals[Math.floor(Math.random() * vals.length)]
+
+    // propagate changes
+
+    // for(let i=0; i<10; i++){
+        
+    //     if (!solved.hasOwnProperty(cell)){
+    //         solver.
+    //     }
+    // }
+    // console.log(ALL_INDICES);
+}
+
+testSudoku();

@@ -22,6 +22,10 @@ $(document).ready(() => {
     $('#checkSol').click((e) => {
         checkSolution();
     });
+
+    $('#new').click((e) => {
+        newSudoku();
+    })
 });
 
 const solveSudoku = () => {
@@ -103,4 +107,13 @@ const copyToClipboard = (val) => {
     dummy.select();
     document.execCommand("copy");
     document.body.removeChild(dummy);
+}
+
+const newSudoku = () => {
+    // reset sudoku
+    resetSudoku();
+
+    // fill some
+    let board = extractBoard();
+    createSudoku(board);
 }

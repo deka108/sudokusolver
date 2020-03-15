@@ -16,19 +16,19 @@
         <script src="https://kit.fontawesome.com/404fdc203a.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <div id="fb-root"></div>
-        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0"></script>
+        <!-- <div id="fb-root"></div>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0"></script> -->
         <div class="container content">
             <div class="row">
                 <h1>Sudoku Solver</h1>
             </div>
-            <div class="row">
+            <!-- <div class="row">
                 <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="Check it out: Fast Sudoku Solver" data-url="https://deka108.github.io/sudokusolver/" data-hashtags="sudoku" data-show-count="true">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                 <div class="fb-share-button" data-href="https://deka108.github.io/sudokusolver/" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
-            </div>
+            </div> -->
             <div class="row">
-                <div class="one-half column" id="board-container">
-                    <table id="grid">
+                <div class="two-thirds column" id="board-container">
+                    <table id="grid" class=" u-max-full-width">
                         <colgroup class="board"><col><col><col></colgroup>
                         <colgroup class="board"><col><col><col></colgroup>
                         <colgroup class="board"><col><col><col></colgroup>
@@ -148,7 +148,7 @@
                         </tbody class="board">
                     </table>
                 </div>
-                <div class="one-half column">
+                <div class="one-third column" id="buttons">
                     <div class="row">
                         <a class="button button-primary s-action" id="reset"><i class="fas fa-undo"></i> Reset Board</a>
                     </div>
@@ -161,17 +161,18 @@
                     <div class="row">
                         <a class="button button-primary s-action" id="copy"><i class="fas fa-copy"></i>  Copy to Clipboard</a>
                     </div>
+                    <div class="row">
+                        <a class="button button-primary s-action" id="new"><i class="fas fa-new"></i>  New Sudoku</a>
+                    </div>
                     <div class="row" id="check-config">
 
                     </div>
                 </div>
             </div>
-            <div>
-            <footer>
-                <div id="footer">
+            <div class="row" id="footer">
+                <footer>
                     <p>Made with <i class="fas fa-cookie"></i>  by <a href="http://github.com/deka108">deka108</a> &copy; 2020</p>
-                </div>
-            </footer>
+                </footer>
             </div>
         </div>
         <script 
