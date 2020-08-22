@@ -116,7 +116,6 @@ const newSudoku = () => {
     // fill some
     let board = extractBoard();
     createSudoku(board);
-    console.log(board);
 
     Object.keys(board).forEach((cell) => {
         $(`input[id="text-${cell}"]`).val(board[cell]);
