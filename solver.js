@@ -344,7 +344,6 @@ SudokuSolver.prototype.checkAssignmentConsistency = function (assignment, variab
     return true;
 }
 
-
 SudokuSolver.prototype.bts = function(assignment){
     // assignment is complete
     if (this.isBoardSolved(assignment)){
@@ -415,27 +414,30 @@ const testSudoku = () => {
 }
 
 const createSudoku = (board) => {
-    // random filled numbers
-    let MAX = 30;
-    let MIN = 10;
-    let idx = Math.floor(Math.random(MIN) * (MAX));
+    // pick a random cell
+    let keys = Object.keys(board);
+    let randKey = keys[Math.floor(keys.length * Math.random())]
+
+    // set a random value on that cell
+    let randVal = Math.floor(Math.random() * 9) + 1  
+    board[randKey] = randVal
+    
+    // solve the puzzle
     let solver = new SudokuSolver(board);
-    let solved = new Set();
+    solver.solve()
 
-    // random first cell
-    let cell = ALL_INDICES[Math.floor(Math.random() * ALL_INDICES.length)];
-    let vals = [...solver.domainVars[cell]];
-    // board[cell] = vals[Math.floor(Math.random() * vals.length)]
-
-    // propagate changes
-
-    // for(let i=0; i<10; i++){
-        
-    //     if (!solved.hasOwnProperty(cell)){
-    //         solver.
-    //     }
-    // }
-    // console.log(ALL_INDICES);
+    // find random cells, reset them to 0
+    let randHidden = Math.floor(Math.random() * 64) + 16
+    let bitMask = new Array(keys.length).fill(false);
+    while (randHidden > 0) {
+        let randIdx = Math.floor(keys.length * Math.random())
+        randKey = keys[randIdx]
+        if (!bitMask[randKey]){
+            board[randKey] = 0
+            bitMask[randKey] = true
+            randHidden--
+        }
+    }
 }
 
-testSudoku();
+// testSudoku()
