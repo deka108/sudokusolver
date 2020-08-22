@@ -426,8 +426,8 @@ const createSudoku = (board) => {
     let solver = new SudokuSolver(board);
     solver.solve()
 
-    // find random cells, reset them to 0
-    let randHidden = Math.floor(Math.random() * 64) + 16
+    // reset random cells between 16-64, reset them to 0
+    let randHidden = Math.floor(Math.random() * (64-16+1) + 16)
     let bitMask = new Array(keys.length).fill(false);
     while (randHidden > 0) {
         let randIdx = Math.floor(keys.length * Math.random())
